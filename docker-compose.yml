@@ -1,0 +1,65 @@
+version: '3'
+services:
+  wordpress:
+    image: wordpress
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wiss1234
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress:/var/www/html
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wiss1234
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  mediawiki:
+    image: mediawiki
+    ports:
+      - "8090:80"
+    environment:
+      MEDIAWIKI_DB_HOST: mediawiki-db
+      MEDIAWIKI_DB_USER: wiki
+      MEDIAWIKI_DB_PASSWORD: wiss1234
+      MEDIAWIKI_DB_NAME: mediawiki
+      MEDIAWIKI_DB_TYPE: mysql
+      MEDIAWIKI_USER: wiki
+      MEDIAWIKI_PASSWORD: wiss1234
+      MEDIAWIKI_SITE_NAME: VivaLab
+    volumes:
+      - mediawiki:/var/www/html/images
+
+  mediawiki-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: mediawiki
+      MYSQL_USER: wiki
+      MYSQL_PASSWORD: wiss1234
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - mediawiki-db:/var/lib/mysql
+
+
+volumes:
+  wordpress:
+  db:
+  mediawiki:
+  mediawiki-db:
